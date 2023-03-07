@@ -22,7 +22,7 @@ requirements:
         - cython
         - python
         - scikit-build
-        - numpy
+        - numpy 1.21
         - wheel
     run:
         - python
