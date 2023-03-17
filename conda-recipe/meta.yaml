@@ -16,7 +16,7 @@ requirements:
         - {{ compiler('dpcpp') }}  >=2023.0  # [not osx]
     host:
         - setuptools
-        - cmake
+        - cmake >=3.21
         - ninja
         - git
         - cython
