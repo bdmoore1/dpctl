@@ -36,6 +36,7 @@ test:
         - cython
         - pytest
         - pytest-cov
+        - setuptools
 
 about:
     home: https://github.com/IntelPython/dpctl.git
