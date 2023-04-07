@@ -288,6 +288,7 @@ public:
 typedef sycl::event (*put_fn_ptr_t)(sycl::queue,
                                     size_t,
                                     size_t,
+                                    size_t,
                                     int,
                                     int,
                                     int,
@@ -306,6 +307,7 @@ template <typename ProjectorT, typename Ty, typename indT>
 sycl::event put_impl(sycl::queue q,
                      size_t orthog_nelems,
                      size_t ind_nelems,
+                     size_t val_nelems,
                      int nd,
                      int ind_nd,
                      int k,
@@ -329,8 +331,8 @@ sycl::event put_impl(sycl::queue q,
                                                  orthog_shape_and_strides};
         NthStrideOffset indices_indexer{ind_nd, ind_offsets,
                                         ind_shape_and_strides};
-        StridedIndexer axes_indexer{ind_nd, 0,
-                                    axes_shape_and_strides + (2 * k)};
+        StridedNDCyclicIndexer axes_indexer{ind_nd, val_nelems, 0,
+                                            axes_shape_and_strides + (2 * k)};
 
         const size_t gws = orthog_nelems * ind_nelems;
 
@@ -338,7 +340,7 @@ sycl::event put_impl(sycl::queue q,
                                     NthStrideOffset, StridedIndexer, Ty, indT>>(
             sycl::range<1>(gws),
             PutFunctor<ProjectorT, TwoOffsets_StridedIndexer, NthStrideOffset,
-                       StridedIndexer, Ty, indT>(
+                       StridedNDCyclicIndexer, Ty, indT>(
                 dst_p, val_p, ind_p, k, ind_nelems, axes_shape_and_strides,
                 orthog_indexer, indices_indexer, axes_indexer));
     });

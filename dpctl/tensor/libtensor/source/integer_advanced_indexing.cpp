@@ -828,9 +828,10 @@ usm_ndarray_put(dpctl::tensor::usm_ndarray dst,
                                  std::to_string(ind_type_id));
     }
 
+    size_t val_nelems = orthog_nelems * ind_nelems;
     sycl::event put_generic_ev =
-        fn(exec_q, orthog_nelems, ind_nelems, orthog_sh_elems, ind_sh_elems, k,
-           packed_shapes_strides, packed_axes_shapes_strides,
+        fn(exec_q, orthog_nelems, ind_nelems, val_nelems, orthog_sh_elems,
+           ind_sh_elems, k, packed_shapes_strides, packed_axes_shapes_strides,
            packed_ind_shapes_strides, dst_data, val_data, packed_ind_ptrs,
            dst_offset, val_offset, packed_ind_offsets, all_deps);
 
