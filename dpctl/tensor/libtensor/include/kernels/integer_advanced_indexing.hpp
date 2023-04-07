@@ -331,8 +331,9 @@ sycl::event put_impl(sycl::queue q,
                                                  orthog_shape_and_strides};
         NthStrideOffset indices_indexer{ind_nd, ind_offsets,
                                         ind_shape_and_strides};
-        StridedNDCyclicIndexer axes_indexer{ind_nd, val_nelems, 0,
-                                            axes_shape_and_strides + (2 * k)};
+        StridedIndexer axes_indexer{ind_nd, 0,
+                                    axes_shape_and_strides + (2 * k)};
+        CyclicIndexer<StridedIndexer> cyclic_indexer{val_nelems, axes_indexer};
 
         const size_t gws = orthog_nelems * ind_nelems;
 
@@ -340,9 +341,9 @@ sycl::event put_impl(sycl::queue q,
                                     NthStrideOffset, StridedIndexer, Ty, indT>>(
             sycl::range<1>(gws),
             PutFunctor<ProjectorT, TwoOffsets_StridedIndexer, NthStrideOffset,
-                       StridedNDCyclicIndexer, Ty, indT>(
+                       CyclicIndexer<StridedIndexer>, Ty, indT>(
                 dst_p, val_p, ind_p, k, ind_nelems, axes_shape_and_strides,
-                orthog_indexer, indices_indexer, axes_indexer));
+                orthog_indexer, indices_indexer, cyclic_indexer));
     });
 
     return put_ev;

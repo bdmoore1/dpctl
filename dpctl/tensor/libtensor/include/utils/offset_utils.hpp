@@ -203,36 +203,21 @@ private:
     py::ssize_t step = 1;
 };
 
-struct StridedNDCyclicIndexer
+template <typename IndexerT> struct CyclicIndexer
 {
-    StridedNDCyclicIndexer(int _nd,
-                           size_t _size,
-                           py::ssize_t _offset,
-                           py::ssize_t const *_packed_shape_strides)
-        : nd(_nd), size(_size), starting_offset(_offset),
-          shape_strides(_packed_shape_strides)
+    CyclicIndexer(size_t _size, IndexerT _indexer)
+        : size(_size), indexer(_indexer)
     {
     }
 
     size_t operator()(size_t gid) const
     {
-        using dpctl::tensor::strides::CIndexer_vector;
-
-        CIndexer_vector _ind(nd);
-        py::ssize_t relative_offset(0);
-        _ind.get_displacement<const py::ssize_t *, const py::ssize_t *>(
-            static_cast<py::ssize_t>(gid % size),
-            shape_strides,      // shape ptr
-            shape_strides + nd, // strides ptr
-            relative_offset);
-        return starting_offset + relative_offset;
+        return indexer(gid % size);
     }
 
 private:
-    int nd;
     size_t size = 1;
-    py::ssize_t starting_offset;
-    py::ssize_t const *shape_strides;
+    IndexerT indexer;
 };
 
 template <typename displacementT> struct TwoOffsets
