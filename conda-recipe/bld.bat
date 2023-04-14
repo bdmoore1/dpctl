@@ -13,7 +13,7 @@ FOR %%V IN (14.0.0 14 15.0.0 15 16.0.0 16) DO @(
   )
 )
 
-set "PLATFORM_DIR=%PREFIX%\Library\share\cmake-3.22\Modules\Platform"
+set "PLATFORM_DIR=%PREFIX%\Library\share\cmake-3.26\Modules\Platform"
 set "FN=Windows-IntelLLVM.cmake"
 
 rem Save the original file, and copy patched file to
